@@ -10,8 +10,8 @@ with open(REQUIREMENTS) as f:
     reqs = f.read()
 
 setup(
-    name='fc-server',
-    version='0.0.1',
+    name='fc_messenger',
+    version='0.1.0',
     description='messenger for python',
     license='MIT Licence',
     url='https://github.com/fangqk1991/py-server',

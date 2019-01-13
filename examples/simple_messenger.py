@@ -1,7 +1,7 @@
 import threading
 import time
 
-from messenger import FCMessenger
+from fc_messenger import FCMessenger
 
 
 class DelayThread(threading.Thread):

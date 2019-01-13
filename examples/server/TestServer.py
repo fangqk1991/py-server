@@ -2,7 +2,7 @@
 import threading
 import time
 
-from messenger import FCServer, FCRouter
+from fc_messenger import FCServer, FCRouter
 
 
 TEST_API = 'some/api'
