@@ -5,17 +5,18 @@ import time
 from fc_messenger import FCServer, FCRouter
 
 
-TEST_API = 'some/api'
+# redis host and port
 HOST = '127.0.0.1'
 PORT = 6488
+TEST_API = 'some/api'
 
 
 class DelayThread(threading.Thread):
     def run(self):
         for i in range(5):
-            print('B: requesting.. [{}]'.format(i))
+            print('Client: requesting.. [{}]'.format(i))
             response = TestServer().request(TEST_API, {'index': i})
-            print('B: Received response: {}'.format(response))
+            print('Client: Received response: {}'.format(response))
             time.sleep(1)
 
 
@@ -29,7 +30,7 @@ class TestServer(FCServer):
     @api.route(TEST_API)
     def xxx(self, context, params):
         index = params['index']
-        print('A: Received message [{}]'.format(index))
+        print('Server: Received message [{}]'.format(index))
         self.answer(context, 'Welcome. [{}]'.format(index))
 
 

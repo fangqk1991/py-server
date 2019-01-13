@@ -9,7 +9,7 @@ class FCMessenger:
     __sessionID = None
 
     def __init__(self, host, port):
-        self.__redisDB = redis.StrictRedis(host=host, port=port, db=0, charset="utf-8", decode_responses=True)
+        self.__redisDB = redis.StrictRedis(host=host, port=port, db=0, charset='utf-8', decode_responses=True)
 
     def __send_api(self, api):
         return 'fc:messenger:api:%s' % api
