@@ -7,7 +7,7 @@ from fc_messenger import FCServer, FCRouter
 
 # redis host and port
 HOST = '127.0.0.1'
-PORT = 6488
+PORT = 6379
 TEST_API = 'some/api'
 
 

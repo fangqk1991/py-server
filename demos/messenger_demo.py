@@ -6,7 +6,7 @@ from fc_messenger import FCMessenger
 
 # redis host and port
 HOST = '127.0.0.1'
-PORT = 6488
+PORT = 6379
 
 
 class SenderThread(threading.Thread):
