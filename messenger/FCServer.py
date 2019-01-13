@@ -16,17 +16,17 @@ class FCRouter:
 
 class FCServer:
 
-    __msgHost = None
-    __msgPort = None
-    __msgApi = None
+    __host = None
+    __port = None
+    __name = None
 
     asyncMode = False
     api = None
 
-    def init(self, msg_host, msg_port, msg_api):
-        self.__msgHost = msg_host
-        self.__msgPort = msg_port
-        self.__msgApi = msg_api
+    def init(self, host, port, name):
+        self.__host = host
+        self.__port = port
+        self.__name = name
 
     def request(self, req_type, params=None, waiting=True, timeout=10):
         
@@ -39,12 +39,12 @@ class FCServer:
         p = params.copy()
         p['type'] = req_type
 
-        messenger = FCMessenger(self.__msgHost, self.__msgPort)
+        messenger = FCMessenger(self.__host, self.__port)
         if not waiting:
-            messenger.send_message(self.__msgApi, json_encode(p), waiting=False)
+            messenger.send_message(self.__name, json_encode(p), waiting=False)
             return
 
-        response = messenger.send_message(self.__msgApi, json_encode(p), waiting=True, timeout=timeout)
+        response = messenger.send_message(self.__name, json_encode(p), waiting=True, timeout=timeout)
         response = json_decode(response)
 
         if 'data' in response:
@@ -54,8 +54,8 @@ class FCServer:
         raise FCException(error['msg'])
 
     def listen(self):
-        context = FCMessenger(self.__msgHost, self.__msgPort)
-        content = context.wait_for_message(self.__msgApi, timeout=0, receipt=False)
+        context = FCMessenger(self.__host, self.__port)
+        content = context.wait_for_message(self.__name, timeout=0, receipt=False)
         params = json_decode(content)
 
         if not isinstance(params, dict) or 'type' not in params:
