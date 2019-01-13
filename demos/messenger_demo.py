@@ -9,21 +9,34 @@ HOST = '127.0.0.1'
 PORT = 6488
 
 
-class DelayThread(threading.Thread):
+class SenderThread(threading.Thread):
     def run(self):
-        time.sleep(1)
-        print('B: Send message..')
+
         sender = FCMessenger(HOST, PORT)
+        response = sender.send_message('test', 'Hello.')
+        print('[Client] Received response: {}'.format(response))
+
         response = sender.send_message('test', 'Nice to meet you.')
-        print('B: Received response: {}'.format(response))
+        print('[Client] Received response: {}'.format(response))
+
+        response = sender.send_message('test', 'Bye.')
+        print('[Client] Received response: {}'.format(response))
 
 
 if __name__ == "__main__":
 
-    DelayThread().start()
+    SenderThread().start()
 
+    times = 0
     receiver = FCMessenger(HOST, PORT)
-    msg = receiver.wait_for_message('test', 0, receipt=False)
-    print('A: Received message: {}'.format(msg))
-    print('A: reply message...')
-    receiver.send_receipt('Accepted')
+    print('[Receiver] Waiting message...')
+    while True:
+        msg = receiver.wait_for_message('test', 0, receipt=False)
+        times += 1
+
+        print('[Receiver] Received message: {}'.format(msg))
+        receiver.send_receipt('Times: {}'.format(times))
+
+        if msg == 'Bye.':
+            break
+    print('[Receiver] Close')

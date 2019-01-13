@@ -11,13 +11,15 @@ PORT = 6488
 TEST_API = 'some/api'
 
 
-class DelayThread(threading.Thread):
+class ClientThread(threading.Thread):
     def run(self):
+        print('[Client] start.\n---')
         for i in range(5):
-            print('Client: requesting.. [{}]'.format(i))
+            print('[Client] requesting.. [{}]'.format(i))
             response = TestServer().request(TEST_API, {'index': i})
-            print('Client: Received response: {}'.format(response))
+            print('[Client] Received response: {}'.format(response))
             time.sleep(1)
+        print('---\nClient end.')
 
 
 class TestServer(FCServer):
@@ -30,11 +32,11 @@ class TestServer(FCServer):
     @api.route(TEST_API)
     def xxx(self, context, params):
         index = params['index']
-        print('Server: Received message [{}]'.format(index))
+        print('[Server] Received message [{}]'.format(index))
         self.answer(context, 'Welcome. [{}]'.format(index))
 
 
 if __name__ == '__main__':
-    DelayThread().start()
+    ClientThread().start()
     TestServer().work()
 
