@@ -28,7 +28,7 @@ class FCServer:
         self.__port = port
         self.__name = name
 
-    def request(self, req_type, params=None, waiting=True, timeout=10):
+    def request(self, req_api, params=None, waiting=True, timeout=10):
         
         if not params:
             params = {}
@@ -37,7 +37,7 @@ class FCServer:
             waiting = False
 
         p = params.copy()
-        p['type'] = req_type
+        p['fc_server_request_api'] = req_api
 
         messenger = FCMessenger(self.__host, self.__port)
         if not waiting:
@@ -58,12 +58,12 @@ class FCServer:
         content = context.wait_for_message(self.__name, timeout=0, receipt=False)
         params = json_decode(content)
 
-        if not isinstance(params, dict) or 'type' not in params:
+        if not isinstance(params, dict) or 'fc_server_request_api' not in params:
             return context, None, None
 
-        req_type = params['type']
-        params.pop('type')
-        return context, req_type, params
+        req_api = params['fc_server_request_api']
+        params.pop('fc_server_request_api')
+        return context, req_api, params
 
     def answer(self, context, data):
         context.send_receipt(json_encode({'data': data}))
@@ -78,17 +78,17 @@ class FCServer:
 
         while True:
 
-            context, req_type, params = self.listen()
+            context, req_api, params = self.listen()
 
-            if not req_type:
-                self.throw(context, 'params error')
+            if not req_api:
+                self.throw(context, 'req api missing')
                 continue
 
-            if req_type not in api_map:
-                self.throw(context, 'req type not in api map')
+            if req_api not in api_map:
+                self.throw(context, 'req api not in api map')
                 continue
 
-            func = api_map[req_type]
+            func = api_map[req_api]
 
             try:
                 if self.asyncMode:
