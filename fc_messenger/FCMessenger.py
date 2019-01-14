@@ -8,6 +8,8 @@ class FCMessenger:
     __redisDB = None
     __sessionID = None
 
+    defaultSessionTime = 600
+
     def __init__(self, host, port):
         self.__redisDB = redis.StrictRedis(host=host, port=port, db=0, charset='utf-8', decode_responses=True)
 
@@ -42,7 +44,7 @@ class FCMessenger:
     def send_message(self, api, content, waiting=True, timeout=10):
         session_id = self.__generate_session_id()
         self.__redisDB.set(session_id, content)
-        self.__redisDB.expire(session_id, 60)
+        self.__redisDB.expire(session_id, self.defaultSessionTime)
         self.__redisDB.rpush(self.__send_api(api), session_id)
         if not waiting:
             return
