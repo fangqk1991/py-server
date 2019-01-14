@@ -7,7 +7,6 @@ PORT = 6379
 
 
 if __name__ == "__main__":
-
     times = 0
     receiver = FCMessenger(HOST, PORT)
     print('[Receiver] Waiting message...')
