@@ -18,15 +18,15 @@ class FCServer:
 
     __host = None
     __port = None
-    __name = None
+    __domain = None
 
     asyncMode = False
     api = None
 
-    def init(self, host, port, name):
+    def init(self, host, port, domain):
         self.__host = host
         self.__port = port
-        self.__name = name
+        self.__domain = domain
 
     def request(self, req_api, params=None, waiting=True, timeout=10):
         
@@ -41,10 +41,10 @@ class FCServer:
 
         messenger = FCMessenger(self.__host, self.__port)
         if not waiting:
-            messenger.send_message(self.__name, json_encode(p), waiting=False)
+            messenger.send_message(self.__domain, json_encode(p), waiting=False)
             return
 
-        response = messenger.send_message(self.__name, json_encode(p), waiting=True, timeout=timeout)
+        response = messenger.send_message(self.__domain, json_encode(p), waiting=True, timeout=timeout)
         response = json_decode(response)
 
         if 'data' in response:
@@ -55,7 +55,7 @@ class FCServer:
 
     def listen(self):
         context = FCMessenger(self.__host, self.__port)
-        content = context.wait_for_message(self.__name, timeout=0, receipt=False)
+        content = context.wait_for_message(self.__domain, timeout=0, receipt=False)
         params = json_decode(content)
 
         if not isinstance(params, dict) or 'fc_server_request_api' not in params:

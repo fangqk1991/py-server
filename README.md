@@ -57,3 +57,54 @@ print('[Client] Received response: {}'.format(response))
 ```
 
 ![](https://image.fangqk.com/2019-01-14/messenger-demo-python.jpg)
+
+### Server 示例
+`TestServer`
+
+```
+from fc_messenger import FCServer, FCRouter
+
+# redis host and port
+HOST = '127.0.0.1'
+PORT = 6379
+TEST_API = 'some/api'
+
+
+class TestServer(FCServer):
+
+    api = FCRouter()
+
+    def __init__(self):
+        self.init(HOST, PORT, 'SOME-SERVER-NAME')
+
+    @api.route(TEST_API)
+    def xxx(self, context, params):
+        index = params['index']
+        print('[Server] Received message [{}]'.format(index))
+        self.answer(context, 'Welcome. [{}]'.format(index))
+```
+
+`server-demo.py`
+
+```
+from demos.server import TestServer
+TestServer().work()
+```
+
+`client-demo.py`
+
+```
+import time
+from demos.server import TestServer, TEST_API
+
+client = TestServer()
+print('[Client] start.\n---')
+for i in range(5):
+    print('[Client] requesting.. [{}]'.format(i))
+    response = client.request(TEST_API, {'index': i})
+    print('[Client] Received response: {}'.format(response))
+    time.sleep(1)
+print('---\nClient end.')
+```
+
+![](https://image.fangqk.com/2019-01-14/server-demo-python.jpg)
